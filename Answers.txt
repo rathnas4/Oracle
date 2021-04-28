@@ -1,0 +1,165 @@
+
+1. Create the necessary data structures to contain the data specified in the
+Appendix ensuring that data integrity is enforced
+
+Answer: 
+
+Tables xx_employee and xx_department are created in xx_create_object.sql
+
+****************************************************************************
+
+2. Populate the Departments and Employees data structures using the data
+specified in the Appendix
+
+Answer:
+
+Execute below SQLs in sqlplus or other tools and COMMIT at the end;
+These SQLS will populate xx_employee and xx_department tables from employee.csv and 
+department.csv files using external table already created by xx_create_object.sql.
+
+INSERT INTO xx_employee (SELECT * FROM xx_employee_stg);
+
+INSERT INTO xx_department (SELECT * FROM xx_department_stg);
+
+COMMIT;
+
+**************************************************************************
+ 
+3. Create an appropriate executable database object to allow an Employee to be
+created
+
+Answer:
+Procudure xx_create_emp is created by xx_create_object.sql.
+
+Following anonymous block can be used to execute the procedure from SQL plus.
+
+set serveroutput on
+
+/*
+Block to call employee record insert procedure
+*/
+
+DECLARE
+BEGIN
+xx_create_emp(
+      p_employee_id => &employee_id  
+    , p_employee_name => '&employee_name'
+    , p_job_title => '&job'
+    , p_manager_id => &manager_id
+    , p_date_hired => '&hire_date'
+    , p_salary =>   &salary
+    , p_department_id => &department_id
+     );
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR MESSAGE:'||SQLERRM);
+END;
+/
+
+**********************************************************************
+
+4. Create an appropriate executable database object to allow the Salary for an
+Employee to be increased or decreased by a percentage
+
+Answer:
+
+Procedure xx_update_salary is created xx_create_object.sql.
+Following anonymous block can be used to execute the procedure from SQL plus.
+
+set serveroutput on
+
+/*
+Block to call update salary of employee
+Enter employee_id and percentage
+Percentage to be entered in negative to decrease salary
+*/
+
+DECLARE
+BEGIN
+xx_update_salary(p_employee_id=>&employee_id
+                ,p_percentage=>&percent);
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR MESSAGE:'||SQLERRM);
+END;
+
+*******************************************************************
+
+5. Create an appropriate executable database object to allow the transfer of an
+Employee to a different Department
+
+Answer:
+
+Procedure xx_update_department created in xx_create_object.sql.
+Following anonymous block can be used to execute the procedure from SQL plus.
+
+set serveroutput on
+/*
+Block to call Employee department transfer procedure
+Enter employee_id and department_id to transfer
+*/
+
+DECLARE
+BEGIN
+xx_update_department(p_employee_id=>&employee_id
+                    ,p_new_dep_id=>&new_dep_id);
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR MESSAGE:'||SQLERRM);
+END;
+
+*****************************************************************************
+
+6. Create an appropriate executable database object to return the Salary for an
+Employee.
+
+Answer:
+
+Function xx_return_salary created in xx_create_object.sql.
+Following anonymous block can be used to execute the procedure from SQL plus.
+
+/*
+Block to call Employee salary function
+Enter employee_id to get salary
+*/
+
+DECLARE
+l_salary NUMBER:=0;
+BEGIN
+l_salary:= xx_return_salary(p_employee_id=>&employee_id);
+DBMS_OUTPUT.PUT_LINE('Salary:'||l_salary);
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('ERROR MESSAGE:'||SQLERRM);
+END;
+
+*********************************************************************
+
+7. Write a report to show all Employees for a Department
+
+Answer:
+
+Execute below SQL in sqlplus and enter the department_id as parameter
+
+     set linesize 10000
+
+     SELECT employee_id,employee_name FROM xx_employee
+     WHERE department_id = &department_id
+
+*******************************************************************
+
+8. Write a report to show the total of Employee Salary for a Department
+
+Answer:
+
+Execute below SQL in sqlplus and enter the department_id as parameter
+
+     SELECT department_id,SUM(NVL(salary,0)) salary
+     FROM xx_employee
+     WHERE department_id = &department_id
+     GROUP BY department_id
+
+***************************************************************************
+
+
+
