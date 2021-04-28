@@ -1,0 +1,20 @@
+These scipts were coded and tested in windows environment.
+
+Please create the below folder. 
+
+C:\Oracle\data
+
+and place 'employee.csv' and 'department.csv' data files.
+
+xx_create_object.sql file has the scripts to create required database objects.
+
+Log in to sqlplus with system user or an account with DBA privilages and create the DB objects.
+by calling @xx_create_object.sql.
+
+Initally it will give few errors for the DROP TABLE statements as the tables were not exist already.
+So these errors can be ignored. 
+
+Execution of objects should be done by same user created the objects else will require the GRANT issued on objects.
+
+
+Explanation for each task is provided in Answers.txt file.
